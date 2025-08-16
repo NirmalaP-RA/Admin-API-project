@@ -60,12 +60,13 @@ response.send('server is working fine')
 // a file that i want to add via require method('file path') pass servr nam of variable
 //similar like we add component in react
 require('./app/routes/admin/color.routes.js')(server);
-//we add routs code files calling here only lik we did in react
+require('./app/routes/admin/material.routes.js')(server);
+//we add routs code files calling here only like we did in react
 //<----------------------->
 //website api url:
 //<----------------------->
 
-server.listen(3000,()=>{
+server.listen(3001,()=>{
 mongoose.connect('mongodb://127.0.0.1:27017/monsta') //url of database,here mongoose_376 is database name this is choice give any name
   .then(() => console.log('Connected!'))
   .catch((error)=>{
@@ -77,3 +78,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/monsta') //url of database,here mong
 //to insert query use thunder client
 //http://localhost:2000/api/admin/category/create
 // http://localhost:2000/api/admin/category/view
+
+
+// http://localhost:3000/app/routes/admin/material.routes/create

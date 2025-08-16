@@ -19,7 +19,7 @@ try{
         name:request.body.name,
         code:request.body.code,
         order:request.body.order,
-         type:request.body.type,
+        type:request.body.type,
     } //if you want to pass data through variable then use this(call this variable in modelname) otherwise use request.body method
 const insertData =new colorModal(data);//pass object
  await insertData.save()

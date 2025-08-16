@@ -2,65 +2,65 @@
 // file name depends on you whatever you want to give name
 // here we create ll thes function that is mandatory
 
-const materialModal = require("../../models/material");
+const materialModal = require("../../models/Materials");
 
 // all the functions created 
 exports.create=async(request,response)=>{
-    // first of all we create object to pass insert query(run through model)
-    // const data={
-    //     name:request.body.name,
-    //     Code:request.body.code,
-    // }
-//what if i by name,code dont send value then into database a blank entry send
-// let do error handling(on not pass parameters,or on passing parameters,on not checking checkbox but value insertedt code and name value must not be inserted so (do validations)(withou) like name ,id,code etc.)
+                                                // first of all we create object to pass insert query(run through model)
+                                                // const data={
+                                                //     name:request.body.name,
+                                                //     Code:request.body.code,
+                                                // }
+                                            //what if i by name,code dont send value then into database a blank entry send
+                                            // let do error handling(on not pass parameters,or on passing parameters,on not checking checkbox but value insertedt code and name value must not be inserted so (do validations)(withou) like name ,id,code etc.)
 try{
-    // 1st method(custom method)
-      const data={
-        name:request.body.name,
-        // code:request.body.code,
-        order:request.body.order,
-         type:request.body.type,
-    } //if you want to pass data through variable then use this(call this variable in modelname) otherwise use request.body method
-const insertData =new materialModal(data);//pass object
+                                        // 1st method(custom method)
+
+                                        //   const data={
+                                        //     name:request.body.name,
+                                        //     // code:request.body.code,
+                                        //     order:request.body.order,
+                                        //      type:request.body.type,
+                                        // } //if you want to pass data through variable then use this(call this variable in modelname) otherwise use request.body method
+const insertData=new materialModal(request.body);//pass object
  await insertData.save()
+
 // 2nd method
 // const insertData =new colorModal(request.body);
 //    await insertData.save()//insert query
 //    if insert query run then go to then()
-.then((result)=>{
-const output={
-    _status:true,
-    _message:"record inserted ",
-    _data:result
 
-}
+.then((result)=>{
+                const output={
+                    _status:true,
+                    _message:"record inserted ",
+                    _data:result,
+                }
 response.send(output);
 })
 .catch((error)=>{
     var errormessages=[];
-
     for(err in error.errors){
-
-      errormessages.push(error.errors[err].message);
+     errormessages.push(error.errors[err].message)
 
      }
-     console.log(error);
-const output={
-    _status:false,
-    _message:"something went wrong",
-    _data:null,
-    _error_messages:errormessages
-}
+    //  console.log(error);
+    const output={
+        _status:false,
+        _message:"something went wrong",
+        _data:null,
+        _error_messages:errormessages,
+    }
 response.send(output);//for api error
-
 })
-}catch(error){
-   
-const output={
-    _status:false,
-    _message:"something went wrong",
-    _data:null
+
 }
+catch(error){
+            const output={
+                _status:false,
+                _message:"something went wrong",
+                _data:null,
+            }
 response.send(output); //for syntax error
 }
    
@@ -70,8 +70,20 @@ exports.view=async(request,response)=>{
 
 var condition={
     delete_at:null
-}; //total value available 
-await  materialModal.find(condition)
+} //total value available
+var current_page=1;
+if(request.body.page){
+    current_page=request.body.page
+}
+
+var limit=2;
+// var skip=0;bydefault
+var skip=(current_page-1)*limit; //pagination
+
+var totalRecords=await materialModal.find(condition).countDocuments();
+var total_pages=Math.ceil(totalRecords/limit);//pagination value never come in float point number
+await  materialModal.find(condition).skip(skip).limit(2)
+
 .sort({
     order:'asc'
 }).sort({
@@ -83,6 +95,11 @@ await  materialModal.find(condition)
      const output={
     _status:true,
     _message:"record fetched ",
+    _pagination:{
+      current_page:current_page,
+      total_pages:total_pages,
+      total_records:totalRecords,
+    },
     _data:result
 }
 response.send(output);
@@ -244,7 +261,7 @@ response.send(output);
 })
 
 
-//     await colorModal.deleteOne({
+//     await materialModal.deleteOne({
 //       _id: request.body.id 
 //     })
 
@@ -278,4 +295,6 @@ response.send(output);
 // })   
 }
 
+
+//http://localhost:3001/api/admin/material/create
 
